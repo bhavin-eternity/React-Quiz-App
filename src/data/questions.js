@@ -1,4 +1,4 @@
-const questions =[const questions = [
+const questions = [
   {
     id: 1,
     question: 'What does HTML stand for?',
@@ -86,4 +86,4 @@ const questions =[const questions = [
   },
 ];
 
-export default questions;]
+export default questions;
