@@ -41,27 +41,48 @@ function quizReducer(state, action) {
     }
 }
 
-export function QuizReducer({ children }) {
+export function QuizProvider({ children }) {
     const [state, dispatch] = useReducer(quizReducer, initialState);
     const [highScore, setHighScore] = useState(
         parseInt(localStorage.getItem('highScore')) || 0
     );
+
+
+    const handleAnswer = (answer) => {
+        dispatch({ type: 'ANSWER', payload: answer });
+    };
+
+    const handleStart = () => {
+        dispatch({ type: 'START' });
+    };
+
+    const handleRestart = () => {
+        dispatch({ type: 'RESTART' });
+    };
+
+    useEffect(() => {
+        if (state.status === 'finished' && state.score > highScore) {
+            setHighScore(state.score);
+            localStorage.setItem('highScore', state.score);
+        }
+    }, [state.status, state.score]);
+
+
+    return (
+        <QuizContext.Provider value={{
+            state,
+            questions,
+            handleAnswer,
+            handleStart,
+            handleRestart,
+            highScore,
+        }}>
+            {children}
+        </QuizContext.Provider>
+    );
 }
 
-const handleAnswer = (answer) => {
-    dispatch({ type: 'ANSWER', payload: answer });
-};
 
-const handleStart = () => {
-    dispatch({ type: 'START' });
-};
-
-const handleRestart = () => {
-    dispatch({ type: 'RESTART' });
-};
-
-useEffect(() => {
-    if (state.status === 'finished' && state.score > highScore) {
-        setHighScore
-    }
-})
+export function useQuiz() {
+    return useContext(QuizContext);
+}
